@@ -189,10 +189,6 @@ model ElectricChillerParallel
     "Chilled water bypass valve"
     annotation (Placement(transformation(extent={{10,10},{-10,-10}},
       rotation=0,origin={-30,-70})));
-  Buildings.Fluid.Sensors.MassFlowRate senMasFloByp(
-    redeclare final package Medium=Medium)
-    "Chilled water bypass valve mass flow meter"
-    annotation (Placement(transformation(extent={{70,-60},{50,-80}})));
   Buildings.Fluid.Sensors.TemperatureTwoPort senTCHWSup(
     redeclare final package Medium=Medium,
     final m_flow_nominal=mCHW_flow_nominal)
@@ -202,6 +198,8 @@ model ElectricChillerParallel
     tWai=60,
     final m_flow_nominal=mCHW_flow_nominal,
     final dpSetPoi=dpSetPoi,
+    controllerType=Modelica.Blocks.Types.SimpleController.PI,
+    k=1,
     Ti=30)
     "Chilled water pump controller"
     annotation (Placement(transformation(extent={{-120,58},{-100,38}})));
@@ -268,9 +266,9 @@ model ElectricChillerParallel
   Fluid.Sensors.MassFlowRate senMasFloCHW(redeclare final package Medium =
         Medium) "Total chilled water pump mass flow rate" annotation (Placement(
         transformation(
-        extent={{-10,-10},{10,10}},
+        extent={{10,-10},{-10,10}},
         rotation=90,
-        origin={-80,10})));
+        origin={120,20})));
 protected
   final parameter Medium.ThermodynamicState sta_default=Medium.setState_pTX(
     T=Medium.T_default,
@@ -288,8 +286,6 @@ initial equation
          ": energyDynamics is selected as steady state, and therefore massDynamics must also be steady-state.");
 
 equation
-  connect(senMasFloByp.port_b,valByp.port_a)
-    annotation (Line(points={{50,-70},{-20,-70}},color={0,127,255}));
   connect(cooTowWitByp.port_b,pumCW.port_a)
     annotation (Line(points={{-20,170},{60,170}},color={0,127,255}));
   connect(on,chiStaCon.on)
@@ -338,27 +334,23 @@ equation
   connect(totPPum.y,PPum)
     annotation (Line(points={{282,160},{320,160}},color={0,0,127}));
   connect(pumCW.P,totPPum.u[1:2])
-    annotation (Line(points={{81,174},{240,174},{240,159.75},{258,159.75}},
-                                                                         color={0,0,127}));
+    annotation (Line(points={{81,174},{240,174},{240,160.5},{258,160.5}},color={0,0,127}));
   connect(pumCHW.P,totPPum.u[3:4])
-    annotation (Line(points={{-31,48},{0,48},{0,0},{240,0},{240,160.75},{258,160.75}},
+    annotation (Line(points={{-31,48},{0,48},{0,0},{240,0},{240,158.5},{258,
+          158.5}},
       color={0,0,127}));
   connect(totPFan.y,PFan)
     annotation (Line(points={{282,200},{320,200}},color={0,0,127}));
   connect(cooTowWitByp.PFan,totPFan.u[1:2])
-    annotation (Line(points={{-19,176},{-20,176},{-20,200},{258,200},{258,200.5}},
+    annotation (Line(points={{-19,176},{-20,176},{-20,200},{258,200},{258,199}},
       color={0,0,127}));
   connect(totPCoo.y,PCoo)
     annotation (Line(points={{282,240},{320,240}},color={0,0,127}));
   connect(mulChiSys.P,totPCoo.u[1:2])
-    annotation (Line(points={{39,52},{20,52},{20,240.5},{258,240.5}},
+    annotation (Line(points={{39,52},{20,52},{20,239},{258,239}},
       color={0,0,127}));
-  connect(mulChiSys.port_b2,splCHWSup.port_1)
-    annotation (Line(points={{60,44},{120,44},{120,-32}},color={0,127,255}));
   connect(splCHWSup.port_3,senTCHWSup.port_a)
     annotation (Line(points={{130,-42},{130,-40},{140,-40}},color={0,127,255}));
-  connect(splCHWSup.port_2,senMasFloByp.port_a)
-    annotation (Line(points={{120,-52},{120,-70},{70,-70}},color={0,127,255}));
   connect(senTCHWRet.T,chiStaCon.TChiWatRet)
     annotation (Line(points={{-260,-29},{-260,209.75},{-201.25,209.75}},
       color={0,0,127}));
@@ -370,9 +362,6 @@ equation
       color={0,0,127}));
   connect(chiBypCon.y,valByp.y)
     annotation (Line(points={{-99,-150},{-30,-150},{-30,-82}}, color={0,0,127}));
-  connect(senMasFloByp.m_flow,chiBypCon.mFloByp)
-    annotation (Line(points={{60,-81},{60,-180},{-140,-180},{-140,-155},{-122,-155}},
-      color={0,0,127}));
   connect(chiStaCon.y,chiBypCon.chiOn)
     annotation (Line(points={{-179.375,210},{-160,210},{-160,-145},{-122,-145}},
       color={255,0,255}));
@@ -380,14 +369,20 @@ equation
     annotation (Line(points={{-210,-40},{-90,-40}}, color={0,127,255}));
   connect(valByp.port_b, joiCHWRet.port_1)
     annotation (Line(points={{-40,-70},{-80,-70},{-80,-50}}, color={0,127,255}));
-  connect(joiCHWRet.port_2, senMasFloCHW.port_a)
-    annotation (Line(points={{-80,-30},{-80,0}}, color={0,127,255}));
-  connect(senMasFloCHW.port_b, pumCHW.port_a)
-    annotation (Line(points={{-80,20},{-80,44},{-52,44}}, color={0,127,255}));
-  connect(expTanCHW.ports[1], senMasFloCHW.port_a)
-    annotation (Line(points={{-88,-16},{-80,-16},{-80,0}}, color={0,127,255}));
-  connect(senMasFloCHW.m_flow, chiWatPumCon.masFloPum) annotation (Line(points={{-91,10},
-          {-140,10},{-140,44},{-122,44}},color={0,0,127}));
+  connect(senMasFloCHW.m_flow, chiWatPumCon.masFloPum) annotation (Line(points={{109,20},
+          {-140,20},{-140,44},{-122,44}},color={0,0,127}));
+  connect(senMasFloCHW.m_flow, chiBypCon.mFloChi) annotation (Line(points={{109,
+          20},{-140,20},{-140,-155},{-122,-155}}, color={0,0,127}));
+  connect(valByp.port_a, splCHWSup.port_2) annotation (Line(points={{-20,-70},{
+          120,-70},{120,-52}}, color={0,127,255}));
+  connect(joiCHWRet.port_2, pumCHW.port_a)
+    annotation (Line(points={{-80,-30},{-80,44},{-52,44}}, color={0,127,255}));
+  connect(expTanCHW.ports[1], pumCHW.port_a) annotation (Line(points={{-88,-16},
+          {-80,-16},{-80,44},{-52,44}}, color={0,127,255}));
+  connect(mulChiSys.port_b2, senMasFloCHW.port_a)
+    annotation (Line(points={{60,44},{120,44},{120,30}}, color={0,127,255}));
+  connect(senMasFloCHW.port_b, splCHWSup.port_1)
+    annotation (Line(points={{120,10},{120,-32}}, color={0,127,255}));
   annotation (
     defaultComponentName="pla",
     Documentation(
@@ -420,6 +415,11 @@ the detailed control logic. </p>
       revisions="<html>
 <ul>
 <li>
+December 14, 2022, by Kathryn Hinkelman:<br/>
+Corrected <code>chiBypCon</code> to control mass flow rate through the chillers.<br>
+This is for <a href=\"https://github.com/lbl-srg/modelica-buildings/issues/2912#issuecomment-1324375700\">#2912</a>.
+</li>
+<li>
 November 16, 2022, by Michael Wetter:<br/>
 Corrected wrong assignments for chiller system <code>mulChiSys</code> which assigned chilled water
 to condenser water parameters and vice versa.<br/>
@@ -434,7 +434,7 @@ March 3, 2022, by Michael Wetter:<br/>
 Moved <code>massDynamics</code> to <code>Advanced</code> tab and
 added assertion for correct combination of energy and mass dynamics.<br/>
 This is for
-<a href=\"https://github.com/ibpsa/modelica-ibpsa/issues/1542\">issue 1542</a>.
+<a href=\"https://github.com/ibpsa/modelica-ibpsa/issues/1542\">#1542</a>.
 </li>
 <li>
 August 6, 2020 by Jing Wang:<br/>
