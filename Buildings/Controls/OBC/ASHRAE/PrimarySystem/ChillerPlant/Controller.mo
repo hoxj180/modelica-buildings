@@ -1,4 +1,4 @@
-within Buildings.Controls.OBC.ASHRAE.PrimarySystem.ChillerPlant;
+﻿within Buildings.Controls.OBC.ASHRAE.PrimarySystem.ChillerPlant;
 block Controller "Chiller plant controller"
 
   parameter Boolean closeCoupledPlant=false
@@ -1601,8 +1601,7 @@ block Controller "Chiller plant controller"
     final staMat=staMat) "Identify stage index"
     annotation (Placement(transformation(extent={{-520,120},{-500,140}})));
   CDL.Routing.BooleanScalarReplicator                        booScaRep3(final
-      nout=nTowCel)
-    "Replicate boolean input"
+      nout=nTowCel) "Replicate boolean input"
     annotation (Placement(transformation(extent={{780,-590},{800,-570}})));
   CDL.Logical.Or or2
     annotation (Placement(transformation(extent={{580,20},{600,40}})));
@@ -1774,8 +1773,8 @@ equation
   connect(dowProCon.yDesConWatPumSpe, desConWatPumSpeSwi.u3) annotation (Line(
         points={{268,-264},{360,-264},{360,192},{478,192}}, color={0,0,127}));
   connect(desConPumSpe.y, heaPreCon.desConWatPumSpe) annotation (Line(points={{
-          562,200},{580,200},{580,240},{-532,240},{-532,196},{-524,196}}, color
-        ={0,0,127}));
+          562,200},{580,200},{580,240},{-532,240},{-532,196},{-524,196}}, color=
+         {0,0,127}));
   connect(heaPreCon.uHeaPreCon, uHeaPreCon) annotation (Line(points={{-524,180},
           {-920,180}}, color={0,0,127}));
   connect(heaPreCon.yMaxTowSpeSet, towCon.uMaxTowSpeSet) annotation (Line(
