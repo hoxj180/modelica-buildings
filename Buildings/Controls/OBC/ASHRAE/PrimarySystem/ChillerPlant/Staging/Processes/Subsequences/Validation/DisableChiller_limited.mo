@@ -3,9 +3,8 @@ model DisableChiller_limited
   "Validate sequence of disabling chiller during stage-down process"
 
   Buildings.Controls.OBC.ASHRAE.PrimarySystem.ChillerPlant.Staging.Processes.Subsequences.DisableChiller
-    chiOff(
-    final nChi=3,
-    final proOnTim=300) "Disable chiller"
+    chiOff(final nChi=3, final proOnTim=300)
+                        "Disable chiller"
     annotation (Placement(transformation(extent={{42,70},{62,90}})));
 
 protected
@@ -55,7 +54,8 @@ equation
     annotation (Line(points={{-98,-100},{34,-100},{34,71},{40,71}},
       color={255,0,255}));
   connect(chiOff.yChi[2], chiStaRet1[1].u)
-    annotation (Line(points={{64,80},{78,80}},   color={255,0,255}));
+    annotation (Line(points={{64,80},{72,80},{72,80},{78,80}},
+                                                 color={255,0,255}));
   connect(chiOff.yChi[3], chiStaRet1[2].u) annotation (Line(points={{64,80.6667},
           {72,80.6667},{72,80},{78,80}},             color={255,0,255}));
   connect(staCha.y, chiTwo1.u2)
@@ -124,7 +124,7 @@ Icon(coordinateSystem(extent={{-180,-120},{140,120}}),
           textColor={28,108,200},
           textString="Chiller 1 Operation"),
         Text(
-          extent={{-74,-52},{-20,-58}},
+          extent={{-84,-54},{-10,-58}},
           textColor={28,108,200},
           textString="Index of Next Disabled Chiller"),
         Text(
