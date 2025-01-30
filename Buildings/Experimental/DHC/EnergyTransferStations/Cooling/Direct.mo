@@ -6,7 +6,7 @@ model Direct "Direct cooling ETS model for district energy systems with in-build
       final typ=DHC.Types.DistrictSystemType.Cooling,
       final have_chiWat=true,
       final have_heaWat=false,
-      con(reverseActing=false),
+      con(reverseActing=true),
       nPorts_aChiWat=1,
       nPorts_bChiWat=1);
 equation
